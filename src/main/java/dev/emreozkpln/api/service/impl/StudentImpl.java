@@ -1,8 +1,8 @@
 package dev.emreozkpln.api.service.impl;
 
-import dev.emreozkpln.api.dto.converter.StudentResponseConverter;
 import dev.emreozkpln.api.dto.StudentRequest;
 import dev.emreozkpln.api.dto.StudentResponseDto;
+import dev.emreozkpln.api.dto.converter.StudentResponseConverter;
 import dev.emreozkpln.api.exception.AlreadyExistsException;
 import dev.emreozkpln.api.exception.NotFoundException;
 import dev.emreozkpln.api.model.School;
@@ -10,6 +10,7 @@ import dev.emreozkpln.api.model.Student;
 import dev.emreozkpln.api.repository.SchoolRepository;
 import dev.emreozkpln.api.repository.StudentRepository;
 import dev.emreozkpln.api.service.StudentService;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class StudentImpl implements StudentService {
 
     private final StudentRepository studentRepository;
@@ -45,10 +47,15 @@ public class StudentImpl implements StudentService {
 
     @Override
     public StudentResponseDto findById(Integer id) {
-        Student student = studentRepository.findById(id)
-                .orElseThrow(()->new NotFoundException("Student not found with the given ID."));
-        StudentResponseDto studentResponseDto = studentResponseConverter.convert(student);
-        return studentResponseDto;
+        try {
+            Student student = studentRepository.findById(id)
+                    .orElseThrow(()->new NotFoundException("Student not found with the given ID."));
+            StudentResponseDto studentResponseDto = studentResponseConverter.convert(student);
+            return studentResponseDto;
+        }catch (Exception e){
+            log.debug("ID bulunamadı {}",id,e);
+            throw new NotFoundException("Eklenmedi");
+        }
     }
 
     @Override

@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: deneme
+
+  datasource:
+    username: postgres
+    password: 12345
+    url: jdbc:postgresql://localhost:5432/first-db
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: update
+
